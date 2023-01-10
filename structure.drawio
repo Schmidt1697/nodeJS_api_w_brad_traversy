@@ -1,0 +1,16 @@
+<mxfile host="65bd71144e">
+    <diagram id="h7kk_lI8F3oMS4vA0fDP" name="Page-1">
+        <mxGraphModel dx="1515" dy="1849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3" value="Route Strucgure" style="swimlane;" vertex="1" parent="1">
+                    <mxGeometry x="-620" y="-720" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="GET/POST/PUT/DELETE&lt;br&gt;/api/v1/bootcamps&lt;br&gt;/api/v1/courses&lt;br&gt;/api/v1/reviews&lt;br&gt;/api/v1/auth&lt;br&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="3">
+                    <mxGeometry x="20" y="60" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
