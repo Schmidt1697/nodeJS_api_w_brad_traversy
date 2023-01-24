@@ -1,4 +1,8 @@
 const mongoose = require('mongoose')
+// bring in 3rd party slugify to help create a slug for each 'name' entered 
+const slugify  = require('slugify')
+//bring in geocoder
+const geocoder = require('../utils/geocoder')
 
 //create schema
 
@@ -96,6 +100,55 @@ const BootcampSchema = new mongoose.Schema({
         type: Date,
         defaut: Date.now
     }
+}, {
+    //adding Virtuals to do reverse Populate
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Create bootcamp slug from schema name - want this to run BEFORE saving to db
+        // not using an arrow function here b/c we need to use the this keyword
+BootcampSchema.pre('save', function(next){
+    //run through the slugify function that we get through the 3rd party package
+    this.slug = slugify(this.name, {lower: true})
+    //need to pass in next and call it so it will run the next piece of middleware afterwards 
+    next();
 })
+
+//Geocode and create location field w/ the address input by user
+BootcampSchema.pre('save', async function(next){
+    const loc = await geocoder.geocode(this.address);
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+        street: loc[0].streetName,
+        city: loc[0].city,
+        state: loc[0].stateCode,
+        zipcode: loc[0].zipcode,
+        country: loc[0].countryCode,
+    }
+
+    //do not save originally inputted address in DB - will use the inutted location info 
+    this.address = undefined
+    next();
+})
+
+//Cascade delete courses when a bootcamp is deleted
+    //use a pre middleware  to access these fields BEFORE they are deleted
+BootcampSchema.pre('remove', async function(next){
+    console.log(`courses being removed from bootcamp ${this._id}`);
+    //call deleteMany method on course model associated with the specific bootcamp by id 
+    await this.model('Course').deleteMany({ bootcamp: this._id });
+    next();
+})
+
+// REVERSE POPULATE w/ VIRTUALS - BootcampSchema.virtual('field we want to add', { options - need to reference the model we will be using} )
+BootcampSchema.virtual('courses',{
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp',
+    justOne: false
+} )
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema)
