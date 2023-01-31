@@ -10,8 +10,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
  
      // Loop over remove fields and delete from reqQuery
      removeFields.forEach(param => delete reqQuery[param])
- 
-     console.log(reqQuery)
+
  
      // Create query string to be able to manipulate
      let queryStr = JSON.stringify(reqQuery);

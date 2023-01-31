@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const morgan = require('morgan')
 const colors = require('colors')
 const fileupload = require('express-fileupload')
+const cookieParser = require('cookie-parser')
 const errorHandler = require('./middleware/error')
 const connectDB = require('./config/db')
 
@@ -16,12 +17,16 @@ connectDB();
 //Route Files
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth')
 const { connect } = require('mongoose');
 
 const app = express();
 
 // Body parser - need to use middleware
-app.use(express.json())
+app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
 
 //Dev logging middleware - this logs the response type and url
 if(process.env.NODE_ENV === 'development'){
@@ -37,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //Mount Routers
 app.use('/api/v1/bootcamps', bootcamps)
 app.use('/api/v1/courses', courses)
+app.use('/api/v1/auth', auth)
 
 //Use custom error Handler created as a piece of middleware
 app.use(errorHandler)
